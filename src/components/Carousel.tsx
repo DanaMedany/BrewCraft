@@ -13,7 +13,6 @@ const DEFAULT_ITEMS = [
     id: 1,
   },
   {
-    id: 2,
     name: "Marcus Johnson",
     rating: 4.5,
     comment:
@@ -34,7 +33,26 @@ const DEFAULT_ITEMS = [
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 500;
 const GAP = 16;
-const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SPRING_OPTIONS: any = { type: "spring", stiffness: 300, damping: 30 };
+
+interface CarouselItem {
+  id: number;
+  name: string;
+  rating: number;
+  comment: string;
+  img: string;
+}
+
+interface CarouselProps {
+  baseWidth: number;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  pauseOnHover?: boolean;
+  loop?: boolean;
+  round?: boolean;
+  items?: CarouselItem[];
+}
 
 export default function Carousel({
   items = DEFAULT_ITEMS,
@@ -44,7 +62,7 @@ export default function Carousel({
   pauseOnHover = false,
   loop = false,
   round = false,
-}) {
+}: CarouselProps) {
   const containerPadding = 16;
   const itemWidth = baseWidth - containerPadding * 2;
   const trackItemOffset = itemWidth + GAP;
@@ -55,7 +73,7 @@ export default function Carousel({
   const [isHovered, setIsHovered] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (pauseOnHover && containerRef.current) {
       const container = containerRef.current;
@@ -106,7 +124,8 @@ export default function Carousel({
     }
   };
 
-  const handleDragEnd = (_, info) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragEnd = (_: any, info: any) => {
     const offset = info.offset.x;
     const velocity = info.velocity.x;
     if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
